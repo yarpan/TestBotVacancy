@@ -1,4 +1,4 @@
-package demo.bot;
+package vacancy.bot;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
