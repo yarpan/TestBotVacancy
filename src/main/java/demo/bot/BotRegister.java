@@ -1,4 +1,4 @@
-package vacancy.bot;
+package demo.bot;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;

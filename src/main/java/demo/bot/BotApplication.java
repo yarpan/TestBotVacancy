@@ -1,4 +1,4 @@
-package vacancy.bot;
+package demo.bot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
