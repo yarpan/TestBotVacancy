@@ -9,7 +9,19 @@ public class VacancyDto {
     @CsvBindByName(column = "Title")
     private String title;
     @CsvBindByName(column = "Short description")
-    private String ShortDescription;
+    private String shortDescription;
+
+    @CsvBindByName(column = "Long description")
+    private String longDescription;
+
+    @CsvBindByName(column = "Company")
+    private String company;
+
+    @CsvBindByName(column = "Salary")
+    private String salary;
+
+    @CsvBindByName(column = "Link")
+    private String link;
 
     public String getId() {
         return id;
@@ -28,10 +40,42 @@ public class VacancyDto {
     }
 
     public String getShortDescription() {
-        return ShortDescription;
+        return shortDescription;
     }
 
     public void setShortDescription(String shortDescription) {
-        ShortDescription = shortDescription;
+        this.shortDescription = shortDescription;
+    }
+
+    public String getLongDescription() {
+        return longDescription;
+    }
+
+    public void setLongDescription(String longDescription) {
+        this.longDescription = longDescription;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getSalary() {
+        return salary;
+    }
+
+    public void setSalary(String salary) {
+        this.salary = salary;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
 }

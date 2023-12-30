@@ -11,7 +11,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -139,9 +138,22 @@ public class VacanciesBot extends TelegramLongPollingBot {
 
 
     private ReplyKeyboard getJuniorVacanciesMenu() {
-        List<InlineKeyboardButton> row = new ArrayList<>();
-
         List<VacancyDto> vacancies = vacancyService.getJuniorVacancies();
+        return getVacanciesMenu(vacancies);
+    }
+
+    private ReplyKeyboard getMiddleVacanciesMenu() {
+        List<VacancyDto> vacancies = vacancyService.getMiddleVacancies();
+        return getVacanciesMenu(vacancies);
+    }
+
+    private ReplyKeyboard getSeniorVacanciesMenu() {
+        List<VacancyDto> vacancies = vacancyService.getSeniorVacancies();
+        return getVacanciesMenu(vacancies);
+    }
+
+    private ReplyKeyboard getVacanciesMenu(List<VacancyDto> vacancies){
+        List<InlineKeyboardButton> row = new ArrayList<>();
         for (VacancyDto vacancy : vacancies) {
             InlineKeyboardButton vacancyButton = new InlineKeyboardButton();
             vacancyButton.setText(vacancy.getTitle());
@@ -152,42 +164,9 @@ public class VacanciesBot extends TelegramLongPollingBot {
         InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
         keyboard.setKeyboard(List.of(row));
         return keyboard;
+
     }
 
-
-    private ReplyKeyboard getMiddleVacanciesMenu() {
-        List<InlineKeyboardButton> row = new ArrayList<>();
-        InlineKeyboardButton vacancy1 = new InlineKeyboardButton();
-        vacancy1.setText("Middle Java Developer in Company1");
-        vacancy1.setCallbackData("vacancyId=3");
-        row.add(vacancy1);
-
-        InlineKeyboardButton vacancy2 = new InlineKeyboardButton();
-        vacancy2.setText("Middle Python Developer in Company2");
-        vacancy2.setCallbackData("vacancyId=4");
-        row.add(vacancy2);
-
-        InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
-        keyboard.setKeyboard(List.of(row));
-        return keyboard;
-    }
-
-    private ReplyKeyboard getSeniorVacanciesMenu() {
-        List<InlineKeyboardButton> row = new ArrayList<>();
-        InlineKeyboardButton vacancy1 = new InlineKeyboardButton();
-        vacancy1.setText("Senior Java Developer in Company1");
-        vacancy1.setCallbackData("vacancy_id=5");
-        row.add(vacancy1);
-
-        InlineKeyboardButton vacancy2 = new InlineKeyboardButton();
-        vacancy2.setText("Senior Python Developer in Company2");
-        vacancy2.setCallbackData("vacancy_id=6");
-        row.add(vacancy2);
-
-        InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
-        keyboard.setKeyboard(List.of(row));
-        return keyboard;
-    }
 
 
     public void handleStartCommand(Update update) {

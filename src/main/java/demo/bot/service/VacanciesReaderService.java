@@ -5,12 +5,14 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import demo.bot.dto.VacancyDto;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+@Service
 public class VacanciesReaderService {
 
     public List<VacancyDto> getVacanciesFromFile(String fileName) {
