@@ -4,6 +4,7 @@ import demo.bot.dto.VacancyDto;
 import demo.bot.service.VacancyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -24,6 +25,17 @@ public class VacanciesBot extends TelegramLongPollingBot {
     private final Map<Long, String> lastShownVacancyLevel = new HashMap<>();
 
 
+    private String OPENAI_API_KEY = "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";
+    private WebClient webClient = WebClient.create("https://api.openai.com/v1/chat/completions");
+    public List<String> levels = List.of("Junior", "Middle", "Senior");
+    public Map<String, List<String>> levelMap = new HashMap<>();
+
+    {
+        levelMap.put("Junior", List.of("1", "2"));
+        levelMap.put("Middle", List.of("3", "4"));
+        levelMap.put("Senior", List.of("5", "6"));
+    }
+
     public VacanciesBot() {
         super(BotData.token);
     }
@@ -36,11 +48,11 @@ public class VacanciesBot extends TelegramLongPollingBot {
             }
             if (update.getCallbackQuery() != null) {
                 String callbackData = update.getCallbackQuery().getData();
-                if ("Show Junior vacancies".equals(callbackData)) {
+                if ("showJuniorVacancies".equals(callbackData)) {
                     showJuniorVacancies(update);
-                } else if ("Show Middle vacancies".equals(callbackData)) {
+                } else if ("showMiddleVacancies".equals(callbackData)) {
                     showMiddleVacancies(update);
-                } else if ("Show Senior vacancies".equals(callbackData)) {
+                } else if ("showSeniorVacancies".equals(callbackData)) {
                     showSeniorVacancies(update);
                 } else if (callbackData.startsWith("vacancyId=")) {
                     String id = callbackData.split("=")[1];
@@ -57,19 +69,22 @@ public class VacanciesBot extends TelegramLongPollingBot {
     }
 
 
-    private void handleBackToVacanciesCommand(Update update) throws TelegramApiException {
-        Long chatId = update.getCallbackQuery().getMessage().getChatId();
-        String level = lastShownVacancyLevel.get(chatId);
 
-        if ("junior".equals(level)) {
-            showJuniorVacancies(update);
-        } else if ("middle".equals(level)) {
-            showMiddleVacancies(update);
-        } else if ("senior".equals(level)) {
-            showSeniorVacancies(update);
+
+    public void handleStartCommand(Update update) {
+        String text = update.getMessage().getText();
+        System.out.println("Received text: " + text);
+
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(update.getMessage().getChatId());
+        sendMessage.setText("Welcome to vacancies Bot. Please choose your title:");
+        sendMessage.setReplyMarkup(getStartMenu());
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
         }
     }
-
 
     private void handleBackToStartCommand(Update update) throws TelegramApiException {
         SendMessage sendMessage = new SendMessage();
@@ -78,6 +93,18 @@ public class VacanciesBot extends TelegramLongPollingBot {
         sendMessage.setReplyMarkup(getStartMenu());
         execute(sendMessage);
 
+    }
+
+    private void handleBackToVacanciesCommand(Update update) throws TelegramApiException {
+        Long chatId = update.getCallbackQuery().getMessage().getChatId();
+        String level = lastShownVacancyLevel.get(chatId);
+        if ("junior".equals(level)) {
+            showJuniorVacancies(update);
+        } else if ("middle".equals(level)) {
+            showMiddleVacancies(update);
+        } else if ("senior".equals(level)) {
+            showSeniorVacancies(update);
+        }
     }
 
     private void showVacancyDescription(String id, Update update) throws TelegramApiException {
@@ -102,6 +129,11 @@ public class VacanciesBot extends TelegramLongPollingBot {
         backToStartMenuButton.setText("Start Menu");
         backToStartMenuButton.setCallbackData("backToStartMenu");
         row.add(backToStartMenuButton);
+
+        InlineKeyboardButton getChatGptButton = new InlineKeyboardButton();
+        getChatGptButton.setText("Get cover letter");
+        getChatGptButton.setUrl("https://chat.openai.com/");
+        row.add(getChatGptButton);
 
         return new InlineKeyboardMarkup(List.of(row));
     }
@@ -152,7 +184,7 @@ public class VacanciesBot extends TelegramLongPollingBot {
         return getVacanciesMenu(vacancies);
     }
 
-    private ReplyKeyboard getVacanciesMenu(List<VacancyDto> vacancies){
+    private ReplyKeyboard getVacanciesMenu(List<VacancyDto> vacancies) {
         List<InlineKeyboardButton> row = new ArrayList<>();
         for (VacancyDto vacancy : vacancies) {
             InlineKeyboardButton vacancyButton = new InlineKeyboardButton();
@@ -169,37 +201,23 @@ public class VacanciesBot extends TelegramLongPollingBot {
 
 
 
-    public void handleStartCommand(Update update) {
-        String text = update.getMessage().getText();
-        System.out.println("Received text: " + text);
-
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(update.getMessage().getChatId());
-        sendMessage.setText("Welcome to vacancies Bot. Please choose your title:");
-        sendMessage.setReplyMarkup(getStartMenu());
-        try {
-            execute(sendMessage);
-        } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     private ReplyKeyboard getStartMenu() {
         List<InlineKeyboardButton> row = new ArrayList<>();
 
         InlineKeyboardButton junior = new InlineKeyboardButton();
         junior.setText("Junior");
-        junior.setCallbackData("Show Junior vacancies");
+        junior.setCallbackData("showJuniorVacancies");
         row.add(junior);
 
         InlineKeyboardButton middle = new InlineKeyboardButton();
         middle.setText("Middle");
-        middle.setCallbackData("Show Middle vacancies");
+        middle.setCallbackData("showMiddleVacancies");
         row.add(middle);
 
         InlineKeyboardButton senior = new InlineKeyboardButton();
         senior.setText("Senior");
-        senior.setCallbackData("Show Senior vacancies");
+        senior.setCallbackData("showSeniorVacancies");
         row.add(senior);
 
         InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();

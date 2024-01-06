@@ -17,13 +17,9 @@ public class BotRegister {
 
     @PostConstruct
     public void init(){
-        TelegramBotsApi telegramBotsApi = null;
+        TelegramBotsApi telegramBotsApi;
         try {
             telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-        } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
-        }
-        try {
             telegramBotsApi.registerBot(vacanciesBot);
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
