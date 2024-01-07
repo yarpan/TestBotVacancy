@@ -1,4 +1,4 @@
-package demo.bot.data;
+package demo.bot;
 
 public class BotData {
     public static final String TELEGRAM_TOKEN = "6784953915:AAFzUE50xflp59-9o9vdeVQA43WHigAhZIc";
