@@ -1,5 +1,6 @@
 package demo.bot;
 
+import demo.bot.data.BotData;
 import demo.bot.dto.VacancyDto;
 import demo.bot.service.VacancyService;
 import org.springframework.beans.factory.annotation.Autowired;
