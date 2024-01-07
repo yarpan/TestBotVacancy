@@ -17,8 +17,7 @@ public class VacanciesReaderService {
 
     public List<VacancyDto> getVacanciesFromFile(String fileName) {
         Resource resource = new ClassPathResource(fileName);
-        try (InputStreamReader inputStreamReader = new InputStreamReader(resource.getInputStream(),
-                StandardCharsets.UTF_8)) {
+        try (InputStreamReader inputStreamReader = new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8)) {
             CsvToBean<VacancyDto> csvToBean = new CsvToBeanBuilder<VacancyDto>(inputStreamReader)
                     .withType(VacancyDto.class)
                     .withIgnoreLeadingWhiteSpace(true)

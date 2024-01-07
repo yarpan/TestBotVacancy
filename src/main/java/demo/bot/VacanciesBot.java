@@ -1,5 +1,6 @@
 package demo.bot;
 
+import demo.bot.data.BotData;
 import demo.bot.dto.VacancyDto;
 import demo.bot.service.VacancyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +34,8 @@ public class VacanciesBot extends TelegramLongPollingBot {
     private final Map<Long, String> lastShownVacancyLevel = new HashMap<>();
     private WebClient webClient = WebClient.create("https://api.openai.com/v1/chat/completions");
     public List<String> levels = List.of("Junior", "Middle", "Senior");
-//    public Map<String, List<String>> levelMap = new HashMap<>();
-//    {
-//        levelMap.put("Junior", List.of("1", "2"));
-//        levelMap.put("Middle", List.of("3", "4"));
-//        levelMap.put("Senior", List.of("5", "6"));
-//    }
+    public Map<String, List<String>> levelMap = new HashMap<>();
+
 
     public VacanciesBot() {
         super(BotData.TELEGRAM_TOKEN);
