@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static demo.bot.data.BotData.BOT_NAME;
 /*import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -249,6 +251,6 @@ public class VacanciesBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "vsefayno.vacancies";
+        return BOT_NAME;
     }
 }
